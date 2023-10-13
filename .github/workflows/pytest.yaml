@@ -37,7 +37,9 @@ jobs:
           exit 1 # Fail the test
         else
           echo "The snippet_score is same or better"
-          # update the score
+        fi 
+        if ((NEW_SCORE > SNIPPET_SCORE)); then
+          echo "update the score"
           gh auth login --with-token <<< "${{ secrets.GH_TOKEN_VARS }}"
           gh --repo $GITHUB_REPOSITORY variable set SNIPPET_SCORE <snippet_score.txt
         fi
