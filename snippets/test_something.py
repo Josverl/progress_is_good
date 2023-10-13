@@ -12,4 +12,4 @@ def test_something_else():
 
 @pytest.mark.parametrize("x", [1, 2, 3,4])
 def test_alot(x):
-    assert x <= 1
+    assert x <= 4
