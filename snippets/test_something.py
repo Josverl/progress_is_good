@@ -1,5 +1,8 @@
 import pytest
 
+# only snippts tests
+pytestmark = pytest.mark.snippets
+
 def test_something():
     assert 1 == 1
 

@@ -7,15 +7,21 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config:pytest.Config):
     stats = {}
     for status in ['passed', 'failed', 'xfailed', 'skipped']:
         stats[status] = snipcount(terminalreporter, status)
-    stats['snippet_score'] = round(stats['passed'] / (stats['passed'] + stats['failed']) * 100, 1)
+    try :
+        stats['snippet_score'] = int(stats['passed'] / (stats['passed'] + stats['failed']) * 100)
+    except ZeroDivisionError:
+        stats['snippet_score'] = -1
 
-    # Write stats to file
-    stats_file = config.rootpath / 'snippet_stats.json'
-    with open(stats_file, 'w') as f:
-        json.dump(stats, f, indent=4)
-    print('----------------- terminal summary -----------------')
-    print(stats)
-    print('----------------------------------------------------')
+    if stats['snippet_score'] >= 0:
+        # Write stats to file
+        # with open(config.rootpath / "coverage"/ 'snippet_score.json', 'w') as f:
+        #     json.dump(stats, f, indent=4)
+        with open(config.rootpath / 'snippet_score.txt', 'w') as f:
+            f.write(str(stats['snippet_score']))
+        
+        print('----------------- terminal summary -----------------')
+        print(stats)
+        print('----------------------------------------------------')
 
 def snipcount(terminalreporter, status:str):
     # Count the number of test snippets that have a given status

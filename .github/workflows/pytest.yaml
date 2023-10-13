@@ -1,0 +1,46 @@
+name: pytest
+on: [push, pull_request]
+# env:
+#   GH_TOKEN: ${{ github.token }}
+    
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x' # Replace with the Python version you're using
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt # Replace with the name of your requirements file
+    - name: pytest - excluding the snippets
+      run: |
+        pytest -m 'not snippets'
+
+    - name: test the snippets
+      continue-on-error: true
+      run: |
+        pytest -m 'snippets'
+
+    - name: dump 
+      run: |
+        env
+
+    - name: compare the snippet_score with the previous one
+      run: |
+        export NEW_SCORE=$(cat snippet_score.txt)
+        echo "SNIPPET_SCORE: $SNIPPET_SCORE"
+        echo "NEW_SCORE: $NEW_SCORE"
+        if ((NEW_SCORE < SNIPPET_SCORE)); then
+          echo "The snippet_score has decreased"
+          exit 1 # Fail the test
+        else
+          echo "The snippet_score is same or better"
+          # update the score
+          gh auth login --with-token <<< "${{ secrets.GH_TOKEN_VARS }}"
+          gh --repo $GITHUB_REPOSITORY variable set SNIPPET_SCORE <snippet_score.txt
+        fi
