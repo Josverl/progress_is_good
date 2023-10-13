@@ -1,9 +1,10 @@
 name: pytest
 on: [push, pull_request]
-# env:
-#   GH_TOKEN: ${{ github.token }}
+env:
+    # Setting an environment variable with the value of a configuration variable
+    SNIPPET_SCORE: ${{ vars.SNIPPET_SCORE }}
+    #   GH_TOKEN: ${{ github.token }}
     
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -25,10 +26,6 @@ jobs:
       continue-on-error: true
       run: |
         pytest -m 'snippets'
-
-    - name: dump 
-      run: |
-        env
 
     - name: compare the snippet_score with the previous one
       run: |
