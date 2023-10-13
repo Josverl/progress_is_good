@@ -14,8 +14,9 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config:pytest.Config):
 
     if stats['snippet_score'] >= 0:
         # Write stats to file
-        # with open(config.rootpath / "coverage"/ 'snippet_score.json', 'w') as f:
-        #     json.dump(stats, f, indent=4)
+        (config.rootpath / "coverage").mkdir(exist_ok=True)
+        with open(config.rootpath / "coverage"/ 'snippet_score.json', 'w') as f:
+            json.dump(stats, f, indent=4)
         with open(config.rootpath / 'snippet_score.txt', 'w') as f:
             f.write(str(stats['snippet_score']))
         

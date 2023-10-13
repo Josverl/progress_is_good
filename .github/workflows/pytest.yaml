@@ -30,20 +30,25 @@ jobs:
     - name: compare the snippet_score with the previous one
       run: |
         export NEW_SCORE=$(cat snippet_score.txt)
-        # echo "SNIPPET_SCORE: $SNIPPET_SCORE"
-        # echo "NEW_SCORE: $NEW_SCORE"
+
         if ((NEW_SCORE < SNIPPET_SCORE)); then
           echo "::warning The snippet_score has decreased from $SNIPPET_SCORE to $NEW_SCORE"
           echo "# Snippets" >> $GITHUB_STEP_SUMMARY
           echo "## The snippet_score has decreased from $SNIPPET_SCORE to $NEW_SCORE" >> $GITHUB_STEP_SUMMARY
+          echo "```json" >> $GITHUB_STEP_SUMMARY
+          cat coverage/snippet_score.json >> $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY          
           exit 1 # Fail the test
-          else
+        else
           echo "The snippet_score is same or better"
-          fi 
-          if [[ "$GITHUB_REF_NAME" == "main" ]] && ((NEW_SCORE > SNIPPET_SCORE)); then
+        fi 
+        if [[ "$GITHUB_REF_NAME" == "main" ]] && ((NEW_SCORE > SNIPPET_SCORE)); then
           echo "update the score"
           gh auth login --with-token <<< "${{ secrets.GH_TOKEN_VARS }}"
           gh --repo $GITHUB_REPOSITORY variable set SNIPPET_SCORE <snippet_score.txt
           echo "# Snippets 📈" >> $GITHUB_STEP_SUMMARY
           echo "## The snippet_score has improved to $NEW_SCORE" >> $GITHUB_STEP_SUMMARY
+          echo "```json" >> $GITHUB_STEP_SUMMARY
+          cat coverage/snippet_score.json >> $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
         fi
