@@ -36,4 +36,6 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 
+
 snippet_score.txt
+coverage
