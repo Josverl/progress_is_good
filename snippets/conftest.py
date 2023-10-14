@@ -7,11 +7,8 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config:pytest.Config):
     stats = {}
     for status in ['passed', 'failed', 'xfailed', 'skipped']:
         stats[status] = snipcount(terminalreporter, status)
-    try :
-        stats['snippet_score'] = int(stats['passed'] / (stats['passed'] + stats['failed']) * 100)
-    except ZeroDivisionError:
-        stats['snippet_score'] = -1
-
+    # simple straigth forward scoring
+    stats['snippet_score'] = int(stats['passed'] - stats['failed'])
     if stats['snippet_score'] >= 0:
         # Write stats to file
         (config.rootpath / "coverage").mkdir(exist_ok=True)
