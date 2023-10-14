@@ -2,9 +2,9 @@ name: snippet_score
 on: [push, pull_request, workflow_dispatch]
 env:
     # Setting an environment variable with the value of a configuration variable
-    SNIPPET_SCORE: ${{ vars.SNIPPET_SCORE }}
-    #   GH_TOKEN: ${{ github.token }}
-    
+    SNIPPET_SCORE: ${{vars.SNIPPET_SCORE}}
+    GH_TOKEN_VARS: ${{secrets.GH_TOKEN_VARS}}            
+
 jobs:
   test:
     runs-on: ubuntu-latest
